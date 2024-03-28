@@ -17,13 +17,13 @@ const StyledColumn = styled.div`
 
 
 const CurrenciesView = React.memo(() => {
-    const [selectedCurrency, setSelectedCurrency] = useState<CurrencyType>("eur")
+    const [selectedCurrencies, setSelectedCurrencies] = useState<CurrencyType[]>([])
     const [selectedDate, setSelectedDate] = useState<DatesType>({startDate: "", endDate: ""})
     const [requestsCount, setRequestsCount] = useState<number>(0)
 
     return <StyledWrapper>
         <StyledColumn>
-            <SelectCurrencyComponent selected={selectedCurrency} onSelect={setSelectedCurrency} />
+            <SelectCurrencyComponent selected={selectedCurrencies} onSelect={setSelectedCurrencies} />
             <SelectDatesComponent selected={selectedDate} onChange={setSelectedDate} />
             <p>Число запросов к API: {requestsCount}</p>
         </StyledColumn>
