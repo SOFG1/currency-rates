@@ -1,0 +1,1 @@
+export type CurrencyType = "eur" | "usd" | "cny"
