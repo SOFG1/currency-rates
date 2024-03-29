@@ -63,7 +63,6 @@ const CurrenciesChartComponent = React.memo(({ data, selectedCurrencies }: IProp
         })
     }, [data, selectedCurrencies])
 
-    console.log(datasets)
 
 
     return <StyledChart

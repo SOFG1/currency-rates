@@ -73,8 +73,8 @@ const CurrenciesView = React.memo(() => {
 
 
     useEffect(() => {
-        handleFetchData()
-    }, [selectedDate])
+        if(selectedCurrencies.length) handleFetchData()
+    }, [selectedDate, selectedCurrencies])
 
     useEffect(() => {
         setError(false)
