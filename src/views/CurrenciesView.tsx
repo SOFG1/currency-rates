@@ -57,9 +57,9 @@ const CurrenciesView = React.memo(() => {
                 setRequestsCount(p => p + 1)
                 setIsFetching(false)
                 chartData[date] = {
-                    eur: data?.data?.rub?.eur,
-                    usd: data?.data?.rub?.usd,
-                    cny: data?.data?.rub?.cny,
+                    eur: 1 / data?.data?.rub?.eur,
+                    usd: 1 /data?.data?.rub?.usd,
+                    cny: 1 / data?.data?.rub?.cny,
                 }
             } catch (e) {
                 setError(true)
