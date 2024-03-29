@@ -74,6 +74,7 @@ const CurrenciesView = React.memo(() => {
     }
 
 
+    console.log(data)
 
     useEffect(() => {
         handleFetchData()
