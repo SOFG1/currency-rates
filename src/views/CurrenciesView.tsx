@@ -1,9 +1,11 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import SelectCurrencyComponent from "../components/SelectCurrencyComponent"
 import { CurrencyType, DatesType } from "../types"
 import SelectDatesComponent from "../components/SelectDatesComponent"
 import { getFormatDate } from "../utils/getFormatedDate"
+import { CurrenciesApi } from "../api/api"
+import { getDatesFromRange } from "../utils/getDatesFromRange"
 
 
 const StyledWrapper = styled.div`
@@ -29,11 +31,57 @@ const getInitialDate = (): DatesType => {
 }
 
 
+type DataType = {
+    [date: string]: {
+        [key in CurrencyType]: string
+    }
+}
+
 
 const CurrenciesView = React.memo(() => {
     const [selectedCurrencies, setSelectedCurrencies] = useState<CurrencyType[]>([])
     const [selectedDate, setSelectedDate] = useState<DatesType>(getInitialDate)
+    const [data, setData] = useState<DataType>({})
     const [requestsCount, setRequestsCount] = useState<number>(0)
+    const [isFetching, setIsFetching] = useState<boolean>(false)
+    const [error, setError] = useState<boolean>(false)
+
+
+    const handleFetchData = async () => {
+        const datesList = getDatesFromRange(selectedDate.startDate, selectedDate.endDate)
+        const chartData: any = {}
+
+
+        for (const date of datesList) {
+            if(data[date]) continue //Prevent repeating fetching (Caching)
+            try {
+                setIsFetching(true)
+                const data = await CurrenciesApi.getRubCurrencies(date)
+                setRequestsCount(p => p + 1)
+                setIsFetching(false)
+                chartData[date] = {
+                    eur: data?.data?.rub?.eur,
+                    usd: data?.data?.rub?.usd,
+                    cny: data?.data?.rub?.cny,
+                }
+            } catch (e) {
+                setError(true)
+                setIsFetching(false)
+                return
+            }
+        }
+        setData(p => ({ ...p, ...chartData }))
+    }
+
+
+
+    useEffect(() => {
+        handleFetchData()
+    }, [selectedDate])
+
+    useEffect(() => {
+        setError(false)
+    }, [selectedDate])
 
 
     return <StyledWrapper>
@@ -42,6 +90,8 @@ const CurrenciesView = React.memo(() => {
             <SelectDatesComponent selected={selectedDate} onChange={setSelectedDate} />
             <p>Число запросов к API: {requestsCount}</p>
         </StyledColumn>
+        {isFetching && <p>Loading...</p>}
+        {error && <p>Error occured!</p>}
     </StyledWrapper>
 })
 
