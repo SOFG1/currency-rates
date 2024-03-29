@@ -8,19 +8,21 @@ import {
     LineElement,
     Filler,
     Tooltip,
+    registerables
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import { CurrenciesDataType, CurrencyType } from "../types";
 import styled from "styled-components";
 
 ChartJS.register(
+    ...registerables,
     LinearScale,
     CategoryScale,
     BarElement,
     PointElement,
     LineElement,
     Filler,
-    Tooltip
+    Tooltip,
 );
 
 
