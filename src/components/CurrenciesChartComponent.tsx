@@ -23,11 +23,12 @@ ChartJS.register(
     Tooltip
 );
 
-const colorsChart = [
-    '#21d593',
-    '#FF5530',
-    '#133D48',
-];
+
+const colorsChart = {
+    usd: '#21d593',
+    eur: '#FF5530',
+    cny: '#133D48',
+}
 
 
 const StyledChart = styled(Chart)`
@@ -51,13 +52,13 @@ const CurrenciesChartComponent = React.memo(({ data, selectedCurrencies }: IProp
     }, [data])
 
     const datasets = useMemo(() => {
-        return selectedCurrencies.map((label: any, index: number) => {
+        return selectedCurrencies.map((label: CurrencyType) => {
             return {
                 type: "line" as const,
                 label,
-                data: Object.values(data).map((d: any) => d[label]),
+                data: Object.values(data).map(d => d[label]),
                 borderWidth: 1,
-                backgroundColor: colorsChart[index],
+                backgroundColor: colorsChart[label],
             }
         })
     }, [data, selectedCurrencies])

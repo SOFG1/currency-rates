@@ -46,7 +46,7 @@ const CurrenciesView = React.memo(() => {
 
     const handleFetchData = async () => {
         const datesList = getDatesFromRange(selectedDate.startDate, selectedDate.endDate)
-        const chartData: any = {}
+        const chartData: CurrenciesDataType = {}
 
 
         for (const date of datesList) {

@@ -11,6 +11,6 @@ export type DatesType = {
 
 export type CurrenciesDataType = {
     [date: string]: {
-        [key in CurrencyType]: string
+        [key in CurrencyType]: number
     }
 }
