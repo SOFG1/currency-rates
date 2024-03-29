@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import SelectCurrencyComponent from "../components/SelectCurrencyComponent"
-import { CurrencyType, DatesType } from "../types"
+import { CurrenciesDataType, CurrencyType, DatesType } from "../types"
 import SelectDatesComponent from "../components/SelectDatesComponent"
 import { getFormatDate } from "../utils/getFormatedDate"
 import { CurrenciesApi } from "../api/api"
 import { getDatesFromRange } from "../utils/getDatesFromRange"
+import CurrenciesChartComponent from "../components/CurrenciesChartComponent"
 
 
 const StyledWrapper = styled.div`
     padding: 50px;
     display: flex;
+    gap: 50px;
 `
 
 const StyledColumn = styled.div`
@@ -31,17 +33,12 @@ const getInitialDate = (): DatesType => {
 }
 
 
-type DataType = {
-    [date: string]: {
-        [key in CurrencyType]: string
-    }
-}
 
 
 const CurrenciesView = React.memo(() => {
     const [selectedCurrencies, setSelectedCurrencies] = useState<CurrencyType[]>([])
     const [selectedDate, setSelectedDate] = useState<DatesType>(getInitialDate)
-    const [data, setData] = useState<DataType>({})
+    const [data, setData] = useState<CurrenciesDataType>({})
     const [requestsCount, setRequestsCount] = useState<number>(0)
     const [isFetching, setIsFetching] = useState<boolean>(false)
     const [error, setError] = useState<boolean>(false)
@@ -53,7 +50,7 @@ const CurrenciesView = React.memo(() => {
 
 
         for (const date of datesList) {
-            if(data[date]) continue //Prevent repeating fetching (Caching)
+            if (data[date]) continue //Prevent repeating fetching (Caching)
             try {
                 setIsFetching(true)
                 const data = await CurrenciesApi.getRubCurrencies(date)
@@ -74,7 +71,6 @@ const CurrenciesView = React.memo(() => {
     }
 
 
-    console.log(data)
 
     useEffect(() => {
         handleFetchData()
@@ -85,15 +81,18 @@ const CurrenciesView = React.memo(() => {
     }, [selectedDate])
 
 
-    return <StyledWrapper>
-        <StyledColumn>
-            <SelectCurrencyComponent selected={selectedCurrencies} onSelect={setSelectedCurrencies} />
-            <SelectDatesComponent selected={selectedDate} onChange={setSelectedDate} />
-            <p>Число запросов к API: {requestsCount}</p>
-        </StyledColumn>
+    return <>
+        <StyledWrapper>
+            <StyledColumn>
+                <SelectCurrencyComponent selected={selectedCurrencies} onSelect={setSelectedCurrencies} />
+                <SelectDatesComponent selected={selectedDate} onChange={setSelectedDate} />
+                <p>Число запросов к API: {requestsCount}</p>
+            </StyledColumn>
+            <CurrenciesChartComponent data={data} selectedCurrencies={selectedCurrencies} />
+        </StyledWrapper>
         {isFetching && <p>Loading...</p>}
         {error && <p>Error occured!</p>}
-    </StyledWrapper>
+    </>
 })
 
 
